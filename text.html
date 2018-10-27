@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文字</title>
+    <style>
+        *{padding:0;margin:0;}
+        #my-canvas {
+            /*border:1px solid cadetblue;*/
+        }
+    </style>
+</head>
+<body>
+<canvas id="my-canvas"></canvas>
+
+<script>
+    var textCanvas = document.getElementById('my-canvas');
+    textCanvas.width = document.documentElement.clientWidth;
+    textCanvas.height = document.documentElement.clientHeight;
+    var ctx = textCanvas.getContext('2d');
+
+    ctx.font = '40px STHupo';
+    ctx.fillText('Fill',100,100);
+    ctx.lineWidth = 8;
+    ctx.font = '50px STHupo';
+    ctx.strokeStyle = '#666';
+    ctx.strokeText('采 编 部',200,200);
+    ctx.fillStyle = "#ffcb4c";
+    ctx.fillText('采 编 部',200,200);
+</script>
+</body>
+</html>

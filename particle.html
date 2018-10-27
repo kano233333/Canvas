@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>粒子连线</title>
+    <style>
+        * {
+            padding:0;
+            margin:0;
+        }
+        canvas {
+            background-color: #050026
+        }
+
+    </style>
+</head>
+<body>
+<canvas id="my-canvas"></canvas>
+<script>
+    var myCanvas = document.getElementById('my-canvas');
+    var allW = document.documentElement.clientWidth;
+    var allH = document.documentElement.clientHeight;
+    myCanvas.width = allW;
+    myCanvas.height = allH;
+
+    var ctx  = myCanvas.getContext('2d');
+
+    var ballArr = [];
+    (function(){
+        for(var i=0;i<180;i++){
+            //创建指定个数小圆球
+            new Ball();
+        }
+    })();
+    //小圆球对象
+    function Ball(){
+        this.x = randomNum(0,allW);
+        this.y = randomNum(0,allH);
+        this.color = "rgb("+Math.random()*255+","+Math.random()*255+","+Math.random()*255+")";
+        this.r = randomNum(1,4);
+        var rand = Math.random();
+        this.speedX = (Math.random()>0.5) ? rand : -rand;
+        rand = Math.random();
+        this.speedY = (Math.random()>0.5) ? rand : -rand;
+        ballArr.push(this);
+    }
+
+    Ball.prototype.draw = function(){
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    Ball.prototype.move = function(){
+        this.x = this.x+this.speedX;
+        this.y = this.y+this.speedY;
+
+        if(this.x<=0 || this.x>=allW-20){
+            this.speedX = -this.speedX;
+        }
+
+        if(this.y<=0 || this.y>=allH){
+            this.speedY = -this.speedY;
+        }
+    }
+
+    var timer = setInterval(function(){
+        ctx.clearRect(0,0,allW,allH);
+        for(var i = 0;i<ballArr.length;i++){
+            ballArr[i].draw();
+            ballArr[i].move();
+        }
+        ballLine();
+        mouseLine();
+    },20)
+
+    //小圆球之间的连线
+    function ballLine(){
+        for(var i = 0;i<ballArr.length;i++){
+            for(var j = 0;j<ballArr.length;j++){
+                //距离
+                if(i!=j && Math.sqrt(Math.pow(ballArr[i].x-ballArr[j].x,2)+Math.pow(ballArr[i].y-ballArr[j].y,2))<80){
+                    ctx.beginPath();
+                    ctx.moveTo(ballArr[i].x,ballArr[i].y);
+                    ctx.lineTo(ballArr[j].x,ballArr[j].y);
+                    ctx.strokeStyle = "rgba(255,255,255,0.3)";
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    var mouseX = 0;
+    var mouseY = 0;
+    //更新鼠标坐标
+    myCanvas.onmousemove = function(event){
+        mouseX = event.offsetX;
+        mouseY = event.offsetY;
+    };
+
+    //鼠标连线
+    function mouseLine(){
+        for(var i = 0;i<ballArr.length;i++){
+            if(Math.sqrt(Math.pow(ballArr[i].x-mouseX,2)+Math.pow(ballArr[i].y-mouseY,2))<100){
+                ctx.beginPath();
+                ctx.moveTo(ballArr[i].x,ballArr[i].y);
+                ctx.lineTo(mouseX,mouseY);
+                ctx.strokeStyle = "rgba(255,255,255,0.5)";
+                ctx.stroke();
+            }
+        }
+    }
+
+    function randomNum(start,end){
+        return Math.floor(Math.random()*(end-start)+start);
+    }
+
+</script>
+</body>
+</html>

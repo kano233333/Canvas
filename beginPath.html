@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>beginPath</title>
+    <style>
+        canvas {
+            border:1px solid cadetblue;
+        }
+    </style>
+</head>
+<body>
+<canvas id="box" width="500" height="500"></canvas>
+
+<script>
+    var box = document.getElementById('box');
+    var ctx = box.getContext('2d');
+
+    ctx.moveTo(100,100);
+    ctx.lineTo(200,200);
+    ctx.strokeStyle = "#dd5e1c";
+    ctx.stroke();
+    ctx.moveTo(100,200);
+    ctx.lineTo(200,300);
+    ctx.strokeStyle = "#235cdd";
+    ctx.stroke();
+</script>
+</body>
+</html>

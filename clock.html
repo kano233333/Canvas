@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>时钟</title>
+    <style>
+        #my-canvas {
+            /*border:1px solid cadetblue;*/
+            position:fixed;
+            top:0;
+            right:0;
+            left:0;
+            bottom:0;
+            margin:auto;
+        }
+    </style>
+</head>
+<body>
+<canvas id="my-canvas" width="300" height="300"></canvas>
+
+<script>
+    var myCanvas = document.getElementById('my-canvas');
+    var allW = myCanvas.width;
+    var allH = myCanvas.height;
+    var ctx = myCanvas.getContext('2d');
+    ctx.translate(allW/2,allH/2);
+
+    function drawInit(){
+        ctx.beginPath();
+        ctx.strokeStyle = '#ccc';
+        ctx.arc(0,0,allW/2,0,Math.PI*2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle = "#bfbfbf";
+        ctx.arc(0,0,5,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    function drawScale(size,callback){
+        for(var i = 0; i<size ; i++){
+            cutScale(size,i+1,callback);
+        }
+    }
+    //分割刻度 size:分割的份数 scale:每一个刻度
+    function cutScale(size,scale,scaleStyle){
+        ctx.beginPath();
+        ctx.save();
+        //通过旋转坐标轴
+        ctx.rotate(Math.PI*2/size*scale);
+        scaleStyle();
+        ctx.stroke();
+        ctx.restore();
+    }
+    //60刻度的样式
+    function smallScaleStyle(){
+        ctx.strokeStyle = '#9ea19c';
+        ctx.moveTo(0,allW/2);
+        ctx.lineTo(0,allW/2-10);
+    }
+    //12刻度的样式
+    function bigScaleStyle(){
+        ctx.strokeStyle = '#070707';
+        ctx.moveTo(0,allW/2);
+        ctx.lineTo(0,allW/2-20);
+        ctx.lineWidth = 4;
+    }
+
+    function drawNeedle(size,newTime,needleStyle){
+        ctx.beginPath();
+        ctx.save();
+        ctx.rotate(Math.PI*2/size*newTime)
+        needleStyle();
+        ctx.restore();
+    }
+
+    function hourNeedleStyle(){
+        ctx.moveTo(0,0);
+        ctx.lineTo(0,-80);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+
+    function minuteNeedleStyle(){
+        ctx.moveTo(0,0);
+        ctx.lineTo(0,-110);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+    function secondNeedleStyle(){
+        ctx.moveTo(0,0);
+        ctx.lineTo(0,-120);
+        ctx.strokeStyle = "#d6404d";
+        ctx.stroke();
+    }
+
+    setInterval(function(){
+        var getTime = new Date();
+        var newHour = getTime.getHours();
+        var newMinute = getTime.getMinutes();
+        var newSecond = getTime.getSeconds();
+        ctx.clearRect(-allW/2,-allH/2,allW,allH);
+        drawInit();
+        drawScale(60,smallScaleStyle);
+        drawScale(12,bigScaleStyle);
+        drawNeedle(12,newHour,hourNeedleStyle);
+        drawNeedle(60,newMinute,minuteNeedleStyle);
+        drawNeedle(60,newSecond,secondNeedleStyle);
+    },100);
+
+</script>
+</body>
+</html>

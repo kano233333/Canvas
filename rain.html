@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rain</title>
+
+    <style>
+        body{
+            margin:0;
+        }
+        canvas{
+            display: block;
+            background-color:#000;
+        }
+    </style>
+</head>
+<body>
+<canvas class="rain"></canvas>
+
+<script>
+    var oCanvas=document.getElementsByClassName('rain')[0];
+    var w,h;
+
+    //浏览器宽高发生变化
+    function setSize(){
+        window.onresize=arguments.callee;  //调用父函数
+        w=window.innerWidth;
+        h=window.innerHeight;
+        oCanvas.width=w;
+        oCanvas.height=h;
+    }
+    setSize();
+
+    var canCon=oCanvas.getContext("2d");
+    var timer = 0;
+    var rains = [];
+    var paopaos = [];
+
+    //Rain
+    function Rain(){
+        this.x = Math.random()*w;
+        this.y = Math.random()*h/4;
+        this.yMax = Math.random()*h/4+h/4*3;
+        rains.push(this);
+    }
+    Rain.prototype.render = function(){
+        canCon.beginPath();
+        canCon.fillStyle = '#3ff';
+        canCon.fillRect(this.x,this.y,2,8);
+    };
+    Rain.prototype.updata = function(i){
+        if(this.yMax>this.y){
+            this.y++;
+        }else{
+            new Paopao(this.x,this.y);
+            rains.splice(i,1);
+        }
+    };
+
+    //paopao
+    function Paopao(x,y){
+        this.r = 0;
+        this.x = x;
+        this.y = y;
+        this.rMax = Math.random()*100+20;
+        paopaos.push(this);
+    }
+    Paopao.prototype.render = function(){
+        canCon.beginPath();
+        canCon.strokeStyle = '#3ff';
+        canCon.arc(this.x,this.y,this.r,0,Math.PI*2);
+        canCon.stroke();
+    }
+    Paopao.prototype.updata = function(i){
+        if(this.r<this.rMax){
+            this.r+=0.5;
+        }else{
+            paopaos.splice(i,1);
+        }
+    };
+
+    //定时器
+    setInterval(function(){
+        if(timer%20==0){
+            new Rain();
+        }
+
+        canCon.fillStyle = "rgba(0,0,0,0.02)";
+        canCon.fillRect(0,0,w,h);
+
+        for(var i = 0;i<rains.length;i++){
+            rains[i].render();
+            rains[i].updata(i);
+        }
+        for(var k = 0;k<paopaos.length;k++){
+            paopaos[k].render();
+            paopaos[k].updata(k);
+        }
+        timer++;
+    },1000/60)
+</script>
+</body>
+</html>

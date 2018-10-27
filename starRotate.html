@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>star</title>
+    <style>
+        *{padding:0;margin:0;}
+        #my-canvas{
+            background-color: #070a58;
+        }
+    </style>
+</head>
+<body>
+<canvas id="my-canvas"></canvas>
+
+<script>
+    var myCanvas = document.getElementById('my-canvas');
+    var allW = document.documentElement.clientWidth;
+    var allH = document.documentElement.clientHeight;
+    myCanvas.width = allW;
+    myCanvas.height = allH;
+    var ctx = myCanvas.getContext('2d');
+
+    var ballArr = [];
+    function init(){
+        var color = ctx.createRadialGradient(allW/2,allH/2,0,allW/2,allH/2,40);
+        color.addColorStop(0.6,'rgba(255,191,65,1)');
+        color.addColorStop(1,'rgba(255,191,65,0)');
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(allW/2,allH/2,40,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,0.5)";
+        for(var i=0;i<9;i++){
+            ctx.beginPath();
+            ctx.arc(allW/2,allH/2,(i+2)*30,0,Math.PI*2);
+            ctx.stroke();
+        }
+    }
+
+    function Ball(x){
+        this.aaa = x;
+        this.x = allW/2+x;
+        this.h = allH/2;
+        this.r = 10;
+        this.speed = Math.ceil((Math.random()+0.3)*5);
+    }
+
+    Ball.prototype.draw = function(){
+        //--------------------------------------------坐标有问题
+        if(this.x == allW/2-this.aaa){
+            this.speed = -this.speed;
+
+        }else if(this.x == allW/2+this.aaa){
+            this.speed = -this.speed;
+        }
+        var ryPow = Math.pow(this.aaa,2)-Math.pow((this.x-allW/2),2);
+        var ry  = Math.sqrt(ryPow<=0 ? -ryPow : ryPow);
+        this.h = this.speed>=0 ? allH/2-ry : allH/2+ry;
+
+        var ballColor = ctx.createRadialGradient(this.x,this.h,0,this.x,this.h,this.r);
+        ballColor.addColorStop(0.6,"rgba(45,155,42,0.9)");
+        ballColor.addColorStop(1,"rgba(45,155,42,0)");
+        ctx.beginPath();
+        ctx.fillStyle = ballColor;
+        ctx.arc(this.x,this.h,this.r,0,Math.PI*2);
+        ctx.fill();
+    }
+    Ball.prototype.move = function(){
+        this.x += this.speed;
+    }
+
+    for(var j = 0 ; j<9;j++){
+        ballArr[j] = new Ball((j+2)*30);
+    }
+
+    setInterval(function(){
+        ctx.clearRect(0,0,allW,allH);
+        init();
+        for(var k = 0;k<9;k++){
+            ballArr[k].draw();
+            ballArr[k].move();
+        }
+    },60);
+
+</script>
+</body>
+</html>

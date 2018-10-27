@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ball</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        #my-canvas {
+            /*background-color:#000;*/
+        }
+    </style>
+</head>
+<body>
+<canvas id="my-canvas" width="1000" height="700"></canvas>
+</body>
+
+<script>
+    var myCanvas = document.getElementById('my-canvas');
+    var ctx = myCanvas.getContext('2d');
+    var timer;
+    var boArr = [];
+
+    myCanvas.width = window.innerWidth;
+    myCanvas.height = window.innerHeight;
+
+    ctx.beginPath();
+    ctx.fillStyle = '#fff';
+    ctx.closePath();
+    ctx.fill();
+    function Ball(x,y){
+        this.x = x;
+        this.y = y;
+        this.r = Math.random()*40;
+        this.color = "rgba("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.random()+")";
+        this.speedX = Math.random()>0.5 ? (Math.random())*10 : -(Math.random())*10;
+        this.speedY = Math.random()>0.5 ? (Math.random())*10 : -(Math.random())*10;
+        boArr.push(this);   //将实例化对象推入数组
+    }
+
+    Ball.prototype.updata = function(){
+        this.x += this.speedX;
+        this.y += this.speedY;
+    }
+
+    Ball.prototype.render = function(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+        ctx.fillStyle = this.color;
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    var bo1;
+    timer = setInterval(function(){
+        ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+        for(var i=0;i<boArr.length;i++){
+            boArr[i].render();
+            boArr[i].updata();
+        }
+    },20)
+
+    document.onmousemove = function(event){
+        bo1 = new Ball(event.clientX,event.clientY);
+    }
+
+</script>
+
+</html>
